@@ -2,7 +2,7 @@
 
 
 <h2>Description</h2>
-Text
+In this lab, I was givwn a Windows Sysmon Event logs and a packet capture and was tasked with investigating a suspected intrusion, with the only information being the file had a .doc extension. I first focused on the sysmon logs, and using Eric Zimmerman's tools, coverted the logs into .csv and used Timeline Explorer to view the logs. I quickly discovered the suspected malicious file and begun my investigation by idenifying the user that was affected and the PID of the file. Examining the .doc file as the parent process, i discovered a 
 <br />
 
 
