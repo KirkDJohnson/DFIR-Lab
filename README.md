@@ -60,7 +60,7 @@ Also, knowing that "The Autostart execution reflects explorer.exe as its parent 
 <img src="https://github.com/user-attachments/assets/5af4f1a2-7678-4028-9565-cf1c1c0c7403"  alt="DFIR Lab"/>
 <br />
 <br />
-Continuing down the attack, I changed first.exe to the parent process and Event Code back to 1 to see if it created any process and I discovered further malicious actions. Particularly, that first, contacted a new domain resolvecyber[.]xyz and downloaded and ran ch.exe which ran and connected to the IP address 167.71.199.191 over port 8080 which is used for HTTP traffic in most cases.<br/>
+Continuing down the attack, I changed first.exe to the parent process and Event Code back to 1 to see if it created any process and I discovered further malicious actions. Particularly, that first, contacted a new domain resolvecyber[.]xyz and downloaded and ran ch.exe which ran and connected to the IP address 167.71.199.191 over port 8080 which is used for HTTP traffic in most cases. I obtained the hash of ch.exe and upon researching it, I can confirm that is malicious and particularly the malware chisel, used for tunneling C2 traffic through encypted tunnels such as HTTPS.<br/>
 <img src="https://github.com/user-attachments/assets/d35435ed-1422-4359-ae51-9176914a3c0e"  alt="DFIR Lab"/>
  <img src="https://github.com/user-attachments/assets/13614ba5-2c47-4d6b-a2df-df62048dffc4"  alt="DFIR Lab"/>
 <br />
@@ -93,8 +93,8 @@ Intrestingly, when inputting final.exe into payload 3, it was making queries to 
 <img src="https://github.com/user-attachments/assets/12d5b094-ce21-4ec5-bf83-abf7ead9d20a"  alt="DFIR Lab"/>
 <br />
 <br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
+I again mvoed final.exe into the parent process and Event ID to 1 to see if it spawned any other programs... and found that now it appeared the attack was establishing persistance through different means. These included, adding the users "shuna" and "shion" and adding them to the group "administrators". The other persistance mechanism appears to be a adding a registry key to allow final.exe to start on boot.<br/>
+<img src="https://github.com/user-attachments/assets/b9b8574d-e3b4-437f-a836-3866fae0d22c"  alt="DFIR Lab"/>
 <br />
 <br />
   Text<br/>
@@ -114,9 +114,7 @@ Intrestingly, when inputting final.exe into payload 3, it was making queries to 
 <br />
 <br />
 <h2>Thoughts</h2>
-This lab was exceptionally put together
-
-
+This lab was exceptionally well put together. It was definitely one of the longer ones I have done, but it did a phenomenal job of showcasing the investigation from start to finish, including how an attacker would gain initial access, conduct discovery, and then add persistence. It did not touch on extraction or attacks on objectives, but it was still a marathon of a lab. I gained experience with EZ tools, which were surprisingly straightforward. I had the impression that DFIR tools were extremely complex, but with Timeline Explorer, I am much more confident and comfortable using them. Moreover, I have had much practice and exposure with Brim and conducting threat intelligence/OSINT, so that was also good practice to keep my skills sharp. The lab provided a few hints to put us on the right track but left the heavy lifting to us as SOC Analysts, which was also great. Overall, I really enjoyed this lab and seeing how an attacker downloads/drops so many different malicious files and creates multiple C2 servers rather than just one. Seeing data being tunneled through HTTP GET requests, further obfuscated with Base64 encoding, was very interesting, which makes me consider examining any suspicious web traffic as it can be tunneling commands used to add persistence to your endpoints.
 <!--
  ```diff
 - text in red
