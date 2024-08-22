@@ -27,7 +27,7 @@ Scenario for the lab.<br/>
 <img src="https://github.com/user-attachments/assets/b60ba3ca-702d-4a11-84c7-4e69540b0c3e"  alt="DFIR Lab"/>
 <br />
 <br />
-In the lab I was provided a packet capture and Windows Event Viewer Sysmon logs. I decided to start the investigation examining the Sysmon logs. Useing EZ Tools (Eric Zimmerman tools) I used EvtxEcmd to convert the event logs into a .csv file for processing in Timeline explorer. This was done through powershell. I loaded the logs into Timeline explorer and they populated correctly. <br/>
+In the lab, I was provided a packet capture and Windows Event Viewer Sysmon logs. I decided to start the investigation examining the Sysmon logs. Useing EZ Tools (Eric Zimmerman tools) I used EvtxEcmd to convert the event logs into a .csv file for processing in Timeline explorer. This was done through Powershell.  <br/>
 <img src="https://github.com/user-attachments/assets/8a171437-d205-4f24-a527-4e1215f0a41f"  alt="DFIR Lab"/>
 <img src="https://github.com/user-attachments/assets/15bfd80c-2612-4b73-9b69-6e2e7087533d"  alt="DFIR Lab"/>
 <br />
@@ -50,7 +50,7 @@ After conducting some OSINT on this attack vector I discovered a post explaining
 <img src="https://github.com/user-attachments/assets/273aeded-cfc0-454a-9bd5-0879a4012570"  alt="DFIR Lab"/>
 <br />
 <br />
-Now that part of the intital access has been discovered I moved on to part two of the lab where another hint was given that said, "The Autostart execution reflects explorer.exe as its parent process ID. Child processes of explorer.exe within the event timeframe could be significant. Process Creation (Event ID 1) and File Creation (Event ID 11) succeeding the document execution are worth checking". With this, I changed the Event Code to 11 and Paylod 4 to include startup from what we know about the vulnerability and found the update.zip that we saw in the decoded base-64 string.<br/>
+Now that part of the intital access has been discovered I moved on to part two of the lab where another hint was given that said, "The Autostart execution reflects explorer.exe as its parent process ID. Child processes of explorer.exe within the event timeframe could be significant. Process Creation (Event ID 1) and File Creation (Event ID 11) succeeding the document execution are worth checking". With this, I changed the Event Code to 11 and Payload 4 to include "startup" from what we know about the vulnerability. This revealed the update.zip that we saw in the decoded base-64 string.<br/>
 <img src="https://github.com/user-attachments/assets/883bffde-bae2-4a1c-b6d9-be513b15cf56"  alt="DFIR Lab"/>
 <img src="https://github.com/user-attachments/assets/fa639fae-0175-40ef-b2b9-3872c782512a"  alt="DFIR Lab"/>
 <br />
@@ -60,12 +60,13 @@ Also, knowing that "The Autostart execution reflects explorer.exe as its parent 
 <img src="https://github.com/user-attachments/assets/5af4f1a2-7678-4028-9565-cf1c1c0c7403"  alt="DFIR Lab"/>
 <br />
 <br />
-Continuing down the attack, I changed first.exe to the parent process and Event Code back to 1 to see if it created any processes and I discovered further malicious actions. Particularly, that first, contacted a new domain resolvecyber[.]xyz and downloaded and ran ch.exe which ran and connected to the IP address 167.71.199.191 over port 8080 which is used for HTTP traffic in most cases. I obtained the hash of ch.exe and upon researching it, I can confirm that is malicious and particularly the malware chisel, used for tunneling C2 traffic through encypted tunnels such as HTTPS.<br/>
+Continuing down the attack, I changed first.exe to the parent process and Event Code back to 1 to see if it created any processes and I discovered further malicious actions. Particularly, that first.exe contacted a new domain resolvecyber[.]xyz and downloaded and ran ch.exe which ran and connected to the IP address 167.71.199.191 over port 8080 which is used for HTTP traffic in most cases. I obtained the hash of ch.exe and upon researching it, I can confirm that is malicious and particularly the malware chisel, used for tunneling C2 traffic through encypted tunnels such as HTTPS.<br/>
 <img src="https://github.com/user-attachments/assets/d35435ed-1422-4359-ae51-9176914a3c0e"  alt="DFIR Lab"/>
  <img src="https://github.com/user-attachments/assets/13614ba5-2c47-4d6b-a2df-df62048dffc4"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/b7f71cbe-c236-4057-8b87-b632348d89d0"  alt="DFIR Lab"/>
 <br />
 <br />
-With what appears to be a potential Command and Control (c2) server being created by first.exe, I switched by focus to the packet capture to see what kind of traffic was made to the malicious domains and IP addresses. I used Brim/Zui for this task. Within Brim, I filtered for HTTP GET requests ti tge second malicious donmain/potential C2 server, resolvesyber[.]xyz and discovered numerous GET requests encoded over the port 8080 which we saw connection to.<br/>
+With what appears to be a potential Command and Control (c2) server being created by first.exe, I switched my focus to the packet capture to see what kind of traffic was made to the malicious domains and IP addresses. I used Brim/Zui for this task. Within Brim, I filtered for HTTP GET requests to the second malicious donmain/potential C2 server, resolvesyber[.]xyz and discovered numerous GET requests encoded over the port 8080 which we saw connection to.<br/>
 <img src="https://github.com/user-attachments/assets/46903726-f565-4dec-bd67-94ff81d61b6c"  alt="DFIR Lab"/>
 <br />
 <br />
@@ -93,24 +94,8 @@ Intrestingly, when inputting final.exe into payload 3, it was making queries to 
 <img src="https://github.com/user-attachments/assets/12d5b094-ce21-4ec5-bf83-abf7ead9d20a"  alt="DFIR Lab"/>
 <br />
 <br />
-I again mvoed final.exe into the parent process and Event ID to 1 to see if it spawned any other programs... and found that now it appeared the attack was establishing persistance through different means. These included, adding the users "shuna" and "shion" and adding them to the group "administrators". The other persistance mechanism appears to be a adding a registry key to allow final.exe to start on boot.<br/>
+I again moved final.exe into the parent process and Event ID to 1 to see if it spawned any other programs... and found that now it appeared the attack was establishing persistance through different means. These included, adding the users "shuna" and "shion" and adding them to the group "administrators". The other persistance mechanism appears to be a adding a registry key to allow final.exe to start on boot.<br/>
 <img src="https://github.com/user-attachments/assets/b9b8574d-e3b4-437f-a836-3866fae0d22c"  alt="DFIR Lab"/>
-<br />
-<br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
-<br />
-<br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
-<br />
-<br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
-<br />
-<br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
 <br />
 <br />
 <h2>Thoughts</h2>
