@@ -69,8 +69,13 @@ With what appears to be a potential Command and Control (c2) server being create
 <img src="https://github.com/user-attachments/assets/46903726-f565-4dec-bd67-94ff81d61b6c"  alt="DFIR Lab"/>
 <br />
 <br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
+I noticed that the GET requests to have the same struture in which they start with /9ab62b5?q= and then the string is vastly different which I found to be base64 encoded text. With this knowledge, I went through the the GET requests, decoded them in cyberchef and realized that the attacker is executing commands on the host, confirming that this is a C2 server. Some of the most intresting and troubling commands/actions the attacker did include: discovering the users on the machine, focusing on the user benimaru and discovering a powershell script, automation.ps1 which included a password, and a port scan which showed many HTTP and HTTPS connections.  <br/>
+<img src="https://github.com/user-attachments/assets/e18e529b-bf45-4ed9-8710-1581f68ec9e9"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/983ec824-f9dd-46c3-aff2-083c57908fca"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/543b8ad0-7dca-4bae-b095-ded3e511234e"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/3445ded7-a00f-4664-9f39-fa373b84870b"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/34002265-d5dc-412e-bd68-2c04084b47fe"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/cbd7f2e3-7e77-4b5e-bcc2-576853e52a57"  alt="DFIR Lab"/>
 <br />
 <br />
   Text<br/>
