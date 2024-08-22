@@ -78,16 +78,19 @@ I noticed that the GET requests to have the same struture in which they start wi
  <img src="https://github.com/user-attachments/assets/cbd7f2e3-7e77-4b5e-bcc2-576853e52a57"  alt="DFIR Lab"/>
 <br />
 <br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
+ At this point I knew there was more to uncover but I was stuck so I went back to Timeline Explorer, filterd for Event Code 1 and User benimaru to see what processes were created after the establishment of the C2 server. I found that the service C:\Windows\system32\wsmprovhost.exe was run with -Embedding, followed with what appeared to be discovery commands, so I conducted research on wsmprovhost and found it to be used as part of LOBINS (living off the land binaries), specfically with Winrm which was used to authenticate and connect to the endpoint.<br/>
+<img src="https://github.com/user-attachments/assets/e69263e3-5571-4196-8d97-7da2e82ffa28"  alt="DFIR Lab"/>
 <br />
 <br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
+Once again, I moved wsmprovhost.exe to the parent process to see if spawned any other process and found that it was used to downloaded two addtional binaries through powershell, from the inital malicious domain phishteam[.]xyz, spf.exe and final.exe. Obtaining the hashes of these binaries, I found clear evidence that the binary was malicious and specifically "printspoofer". I conducted further OSINT this and came across a GitHub repo which explained it allows: "From LOCAL/NETWORK SERVICE to SYSTEM by abusing SeImpersonatePrivilege on Windows 10 and Server 2016/2019."  (https://github.com/itm4n/PrintSpoofer). <br/>
+<img src="https://github.com/user-attachments/assets/108433f4-0cb2-4c44-b744-28f5f4c9d099"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/d7df92be-12dc-49e9-a145-4242e1e8494f"  alt="DFIR Lab"/>
+ <img src="https://github.com/user-attachments/assets/90ba68f7-98e2-4e4f-9501-ed7b4228cf54"  alt="DFIR Lab"/>
 <br />
 <br />
-  Text<br/>
-<img src=""  alt="DFIR Lab"/>
+Intrestingly, when inputting final.exe into payload 3, it was making queries to the same C2 we saw earlier, resolvecyber[.]xyz. Going back to Brim, I had overlooked that the commands were coming from two different ports, 80 and 8080, which indicates that there is a second C2 sever that was established by final.exe. <br/>
+<img src="https://github.com/user-attachments/assets/1f785942-da9e-4267-a1b8-8aac79731ba2"  alt="DFIR Lab"/>
+<img src="https://github.com/user-attachments/assets/12d5b094-ce21-4ec5-bf83-abf7ead9d20a"  alt="DFIR Lab"/>
 <br />
 <br />
   Text<br/>
